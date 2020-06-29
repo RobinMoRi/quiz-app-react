@@ -3,9 +3,7 @@ import classes from './Button.module.css'
 
 const button = (props) => {
     return (
-        <button className={classes.Button} {...props}>
-            {props.children}
-        </button>
+        props.show ? <button className={classes.Button} {...props}>{props.children}</button> : null
     )
 }
 

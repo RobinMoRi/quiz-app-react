@@ -12,81 +12,145 @@ class QuestionCard extends Component {
         showNextButton: false,
         results: null,
         questionNumber: 0,
-        answers: null
+        answers: null,
+        showQuestion: false,
+        score: 0,
+        questions: 10
+    }
+
+    componentDidUpdate(){
+        console.log('This state', this.state)
     }
 
     componentDidMount(){
-        axios.get('?amount=10')
+        axios.get('?amount=10&difficulty=easy&encode=url3986')
         .then(response => {
             this.setState({results: response.data.results});
             console.log(response.data.results);
-            this.spreadAnswer()
+            this.spreadAnswer(0)
         })
     }
 
 
-    showNextButton = () => {
-        let currentQuestionNumber = {
-            ...this.state.questionNumber
+    showNextButton = (answerKey) => {
+        const answerClickedState = {
+            ...this.state.answers
         }
-        const newQuestionNumber = currentQuestionNumber + 1
+        answerClickedState[answerKey].clicked = true
+        if(answerClickedState[answerKey].correctAnswer){
+            this.countScoreHandler()
+        }
 
-        this.setState({...this.state, nextButtonHidden: false, questionNumber: newQuestionNumber})
-        console.log(this.state.questionNumber)
+        this.setState({showNextButton: true, answers: answerClickedState})
+        console.log('score', this.state.score)
+    }
+
+    countScoreHandler = () => {
+        let newScore = this.state.score
+        newScore = newScore + 1
+        this.setState({score: newScore})
+    }
+
+    answerIsCorrect(answerKey){
+        const answer = {
+            ...this.state
+        }
+        return answer.answers[answerKey].correctAnswer
     }
 
 
     //Update by fetching new question??
     nextQuestionHandler = () => {
-        this.setState({...this.state, nextButtonHidden: true})
+        let currentState = {
+            ...this.state
+        }
+        const newQuestionNumber = currentState.questionNumber + 1
+        this.setState({showNextButton: false, questionNumber: newQuestionNumber})
+        this.spreadAnswer(newQuestionNumber)
     }
 
-    spreadAnswer = () => {
+    spreadAnswer = (questionNumber) => {
         const incorrectAnswers = {
-            ...this.state.results[this.state.questionNumber].incorrect_answers
+            ...this.state.results[questionNumber].incorrect_answers
         }
 
-        console.log('incorrect answers: ', incorrectAnswers)
         let answers = Object.keys(incorrectAnswers)
             .map(incorrectAnswer => {
                 return incorrectAnswers[incorrectAnswer]
         })
-        answers.push(this.state.results[this.state.questionNumber].correct_answer)
+        answers.push(this.state.results[questionNumber].correct_answer)
 
         const answersLength = answers.length
-        let answerObject = answers.map((answer, iterator) => ({'answer': answer, 'correctAnswer': iterator === answersLength-1}));
+        let answerArray = answers
+                            .map((answer, iterator) => ({
+                                'answer': answer, 'correctAnswer': iterator === answersLength-1, 'clicked': false
+                            }));
+        answerArray = this.shuffleArray(answerArray)
+        this.setState({answers: answerArray})
+     }
 
-        console.log('ANS: ', answerObject)
-        this.setState({...this.state, answers: answerObject})
+     shuffleArray(array){
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+      
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+      
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+      
+        return array;
+     }
+
+     onStartHandler = () => {
+        this.setState({showQuestion: true})
      }
 
     render() {
         //Loop through answers and display as question
         let question = <Spinner/>
         let answers = <Spinner/>
-        if(this.state.results){
+        if(this.state.results  && this.state.questionNumber < this.state.questions){
             console.log('debugging',this.state.questionNumber)
             question = (
-                <Question>{this.state.results[this.state.questionNumber].question}</Question>
+                <Question show={this.state.showQuestion}>{this.state.results[this.state.questionNumber].question}</Question>
             )
         }
 
-        if(this.state.answers){
+        if(this.state.answers && this.state.questionNumber < this.state.questions){
             console.log('Testing ', this.state.answers)     
             answers = Object.keys(this.state.answers)
                 .map(answerKey => {
             return <AnswerButton 
                         key={answerKey}
-                        showNext={this.showNextButton}>{this.state.answers[answerKey].answer}
+                        showNext={() => this.showNextButton(answerKey)}
+                        show={this.state.showQuestion}
+                        showCorrect={this.answerIsCorrect(answerKey)}
+                        nextButtonShown={this.state.showNextButton}
+                        clicked={this.state.answers[answerKey].clicked}>{this.state.answers[answerKey].answer}
                     </AnswerButton>
             })
+        }
+
+        let buttons = ''
+        if(this.state.questionNumber < this.state.questions){
+            buttons = (<div>
+                <Button show={this.state.showNextButton} onClick={this.nextQuestionHandler}>Next Question</Button>
+                <Button show={!this.state.showQuestion} onClick={this.onStartHandler}>Start Quiz!</Button>  
+            </div>)
         }
         
         return (
             <div className={classes.QuestionCard}>
                 {question}
                 {answers}
-                <Button show={this.state.showNextButton} onClick={this.nextQuestionHandler}>Next</Button>
+                {buttons}
             </div>
         )
     }

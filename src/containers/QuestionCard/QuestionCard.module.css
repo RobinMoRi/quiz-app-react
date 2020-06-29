@@ -1,0 +1,21 @@
+.QuestionCard{
+    background-color: cadetblue;
+    width: 350px;
+    border: 1px solid black;
+    height: auto;
+    padding: 1%;
+    align-items: center;
+    border-radius: 10px;
+
+    position: absolute;
+    left: 30%;
+    top: 30%;
+}
+
+.FalseQuestion{
+    background-color: red;
+}
+
+.TrueQuestion{
+    background-color: green;
+}

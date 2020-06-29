@@ -1,0 +1,18 @@
+.AnswerButton{
+    background-color: whitesmoke;
+    width: 150px;
+    border: 1px solid black;
+    height: auto;
+    padding: 1%;
+    text-align: center;
+    margin: 4px;
+    border-radius: 15px;
+    float: left;
+
+
+}
+
+.AnswerButton:hover{
+    color: white;
+    cursor: pointer;
+}

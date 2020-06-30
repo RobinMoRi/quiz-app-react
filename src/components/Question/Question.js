@@ -5,7 +5,7 @@ import classes from './Question.module.css'
 const question = (props) => {
     return (
         props.show ? <div className={classes.Question}>
-            {decodeURIComponent(props.children)}
+            <strong>{decodeURIComponent(props.children)}</strong>
         </div> : null
     )
 }

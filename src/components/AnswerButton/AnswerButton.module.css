@@ -1,47 +1,50 @@
 .AnswerButton{
-    background-color: whitesmoke;
+    background-color: white;
     color: black;
     width: 158px;
-    border: 1px solid rgb(134, 134, 134);
+    border: none;
     height: auto;
     text-align: center;
-    vertical-align: sub;
-    margin: 4px;
-    border-radius: 7px;
+    vertical-align: text-bottom;
+    margin: 5px;
+    margin-left: 6px;
+    margin-bottom: 20px;
+    border-radius: 25px;
     float: left;
     min-height: 50px;
+    box-shadow: 0px 5px 5px 2px rgb(228, 228, 228);
+    font-size: 11pt;
 }
 
 .FalseAnswer{
-    background-color: rgb(243, 187, 181);
-    color: rgb(165, 47, 34);
-    border: 1px solid rgb(73, 8, 1);
+    color: rgb(192, 22, 3);
+    border: 2px solid rgb(192, 22, 3);
+    width: 154px;
 }
 
 .CorrectAnswer{
-    background-color: rgb(201, 250, 186);
-    color: rgb(33, 119, 33);
-    border: 1px solid rgb(21, 65, 27);
+    color: rgb(55, 151, 0);
+    border: 2px solid rgb(55, 151, 0);
+    width: 154px;
 }
 
 
 .AnswerButton:hover{
-    color: whitesmoke;
-    background-color: rgb(134, 134, 134);
-    border-color: rgb(88, 88, 88);
+    color: black;
+    background-color: rgb(238, 237, 237);
     cursor: pointer;
 }
 
 .FalseAnswer:hover{
-    color: rgb(243, 187, 181);
-    background-color: rgb(165, 47, 34);
-    border-color: rgb(199, 136, 129);
+    color: rgb(192, 22, 3);
+    background-color: rgb(253, 190, 190);
+    border-color: rgb(192, 22, 3);
     cursor: pointer;
 }
 
 .CorrectAnswer:hover{
-    color: rgb(201, 250, 186);
-    background-color: rgb(33, 119, 33);
-    border-color: rgb(106, 190, 117);
+    color: rgb(55, 151, 0);
+    background-color: rgb(215, 255, 190);
+    border-color: rgb(55, 151, 0);
     cursor: pointer;
 }

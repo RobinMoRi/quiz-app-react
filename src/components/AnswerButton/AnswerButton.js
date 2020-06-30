@@ -12,9 +12,11 @@ const answerButton = (props) => {
     
 
     return (
-        props.show ? <div className={buttonClass.join(' ')} onClick={props.showNext}>
+        props.show ? <button className={buttonClass.join(' ')} 
+        onClick={props.showNext}
+        disabled={props.nextButtonShown}>
             {decodeURIComponent(props.children)}
-        </div> : null
+        </button> : null
     )
 }
 

@@ -6,6 +6,7 @@ import Question from '../../components/Question/Question'
 import Button from '../../components/Button/Button'
 import axios from '../../axios-quiz'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import ScoreBoard from '../../components/ScoreBoard/ScoreBoard'
 
 class QuestionCard extends Component {
     state = {
@@ -15,7 +16,7 @@ class QuestionCard extends Component {
         answers: null,
         showQuestion: false,
         score: 0,
-        questions: 10
+        questions: 9
     }
 
     componentDidUpdate(){
@@ -115,15 +116,15 @@ class QuestionCard extends Component {
     render() {
         //Loop through answers and display as question
         let question = <Spinner/>
-        let answers = <Spinner/>
-        if(this.state.results  && this.state.questionNumber < this.state.questions){
+        let answers = null
+        if(this.state.results && (this.state.questionNumber < this.state.questions)){
             console.log('debugging',this.state.questionNumber)
             question = (
                 <Question show={this.state.showQuestion}>{this.state.results[this.state.questionNumber].question}</Question>
             )
         }
 
-        if(this.state.answers && this.state.questionNumber < this.state.questions){
+        if(this.state.answers && (this.state.questionNumber < this.state.questions)){
             console.log('Testing ', this.state.answers)     
             answers = Object.keys(this.state.answers)
                 .map(answerKey => {
@@ -139,11 +140,20 @@ class QuestionCard extends Component {
         }
 
         let buttons = ''
-        if(this.state.questionNumber < this.state.questions){
+        if(this.state.results && this.state.questionNumber < this.state.questions){
             buttons = (<div>
                 <Button show={this.state.showNextButton} onClick={this.nextQuestionHandler}>Next Question</Button>
                 <Button show={!this.state.showQuestion} onClick={this.onStartHandler}>Start Quiz!</Button>  
             </div>)
+        }
+
+        let scoreBoard = ''
+        if(this.state.questionNumber === this.state.questions){
+            scoreBoard = <ScoreBoard score={this.state.score} questions={this.state.questions+1} />
+            question = null
+            answers = null
+            buttons = null
+
         }
         
         return (
@@ -151,6 +161,7 @@ class QuestionCard extends Component {
                 {question}
                 {answers}
                 {buttons}
+                {scoreBoard}
             </div>
         )
     }

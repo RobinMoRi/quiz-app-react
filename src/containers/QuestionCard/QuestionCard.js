@@ -7,28 +7,42 @@ import Button from '../../components/Button/Button'
 import axios from '../../axios-quiz'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import ScoreBoard from '../../components/ScoreBoard/ScoreBoard'
+import QuestionHeader from '../../components/QuestionHeader/QuestionHeader'
+import QuestionContainer from '../../containers/QuestionContainer/QuestionContainer'
+import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
+import Category from '../../components/Category/Category'
 
 class QuestionCard extends Component {
-    state = {
+    initialState = {
         showNextButton: false,
         results: null,
-        questionNumber: 0,
+        questionNumber: 0, //Zero-indexed array of questions
         answers: null,
         showQuestion: false,
         score: 0,
-        questions: 9
+        questions: 10, //number of questions (for easy reading)
+        difficulty: 'medium'
+    }
+
+    state = {
+        ...this.initialState
     }
 
     componentDidUpdate(){
-        console.log('This state', this.state)
+        console.log('[initialState]: ', this.initialState)
+        console.log('[state]: ', this.state)
     }
 
     componentDidMount(){
-        axios.get('?amount=10&difficulty=easy&encode=url3986')
+        this.getQuizData()
+    }
+
+    getQuizData = () => {
+        axios.get(`?amount=${this.state.questions}&difficulty=${this.state.difficulty}&encode=url3986`)
         .then(response => {
             this.setState({results: response.data.results});
             console.log(response.data.results);
-            this.spreadAnswer(0)
+            this.spreadAnswer(this.state.questionNumber)
         })
     }
 
@@ -43,7 +57,6 @@ class QuestionCard extends Component {
         }
 
         this.setState({showNextButton: true, answers: answerClickedState})
-        console.log('score', this.state.score)
     }
 
     countScoreHandler = () => {
@@ -67,7 +80,9 @@ class QuestionCard extends Component {
         }
         const newQuestionNumber = currentState.questionNumber + 1
         this.setState({showNextButton: false, questionNumber: newQuestionNumber})
-        this.spreadAnswer(newQuestionNumber)
+        if(this.state.questionNumber < this.state.questions - 1){
+            this.spreadAnswer(newQuestionNumber)
+        }
     }
 
     spreadAnswer = (questionNumber) => {
@@ -93,14 +108,11 @@ class QuestionCard extends Component {
      shuffleArray(array){
         var currentIndex = array.length, temporaryValue, randomIndex;
 
-        // While there remain elements to shuffle...
         while (0 !== currentIndex) {
-      
-          // Pick a remaining element...
+
           randomIndex = Math.floor(Math.random() * currentIndex);
           currentIndex -= 1;
-      
-          // And swap it with the current element.
+
           temporaryValue = array[currentIndex];
           array[currentIndex] = array[randomIndex];
           array[randomIndex] = temporaryValue;
@@ -113,19 +125,28 @@ class QuestionCard extends Component {
         this.setState({showQuestion: true})
      }
 
+     onRestartHandler = () => {
+        this.setState({ ...this.initialState })
+        this.getQuizData()
+     }
+
     render() {
         //Loop through answers and display as question
         let question = <Spinner/>
-        let answers = null
-        if(this.state.results && (this.state.questionNumber < this.state.questions)){
-            console.log('debugging',this.state.questionNumber)
+        if(this.state.results && (this.state.questionNumber < this.state.questions) && (this.state.questionNumber !== this.state.questions)){
             question = (
-                <Question show={this.state.showQuestion}>{this.state.results[this.state.questionNumber].question}</Question>
+                <QuestionContainer show={this.state.showQuestion}>
+                    <QuestionHeader show={this.state.showQuestion} 
+                                    questionNumber={this.state.questionNumber+1}
+                                    questions={this.state.questions}/>
+                    <Category category={this.state.results[this.state.questionNumber].category} />
+                    <Question show={this.state.showQuestion}>{this.state.results[this.state.questionNumber].question}</Question>
+                </QuestionContainer>
             )
         }
 
-        if(this.state.answers && (this.state.questionNumber < this.state.questions)){
-            console.log('Testing ', this.state.answers)     
+        let answers = null
+        if(this.state.answers && (this.state.questionNumber < this.state.questions) && (this.state.questionNumber !== this.state.questions)){
             answers = Object.keys(this.state.answers)
                 .map(answerKey => {
             return <AnswerButton 
@@ -139,21 +160,25 @@ class QuestionCard extends Component {
             })
         }
 
-        let buttons = ''
-        if(this.state.results && this.state.questionNumber < this.state.questions){
+        let buttons = null
+        if(this.state.results && (this.state.questionNumber < this.state.questions) && (this.state.questionNumber !== this.state.questions)){
             buttons = (<div>
                 <Button show={this.state.showNextButton} onClick={this.nextQuestionHandler}>Next Question</Button>
                 <Button show={!this.state.showQuestion} onClick={this.onStartHandler}>Start Quiz!</Button>  
             </div>)
         }
 
-        let scoreBoard = ''
+        let scoreBoard = null
         if(this.state.questionNumber === this.state.questions){
-            scoreBoard = <ScoreBoard score={this.state.score} questions={this.state.questions+1} />
+            scoreBoard = (
+                <AuxContainer>
+                    <ScoreBoard score={this.state.score} questions={this.state.questions} />
+                    <Button show={true} onClick={this.onRestartHandler} score={this.state.score} questions={this.state.questions}>Restart</Button>
+                </AuxContainer>)
+                            
             question = null
             answers = null
             buttons = null
-
         }
         
         return (

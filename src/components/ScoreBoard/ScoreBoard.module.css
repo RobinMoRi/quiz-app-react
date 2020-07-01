@@ -1,0 +1,9 @@
+.ScoreBoard{
+    padding: 10px;
+    font-family: 'Open Sans';
+}
+
+.Congratulation{
+    font-size: 16pt;
+    margin-top: 6px;
+}

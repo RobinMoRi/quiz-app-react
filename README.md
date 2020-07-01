@@ -9,7 +9,7 @@ Using the following tools and libraries:
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com/) to Quiz App React.
+Use the package manager [npm](https://www.npmjs.com/) to run Quiz App React.
 
 ```bash
 npm install

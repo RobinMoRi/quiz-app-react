@@ -3,7 +3,7 @@
 Quiz App React is a simple quiz app built on [Create React App](https://github.com/facebook/create-react-app). 
 
 Using the following tools and libraries:
-* [Font Awesome](https:/fontawesome.com/)
+* [Font Awesome](https://fontawesome.com/)
 * [Open Trivia DataBase](https://opentdb.com/api_config.php)
 * Javascript/JSX/CSS
 

@@ -18,7 +18,6 @@ class QuestionCard extends Component {
         results: null,
         questionNumber: 0, //Zero-indexed array of questions
         answers: null,
-        showQuestion: false,
         score: 0,
         questions: 10, //number of questions (for easy reading)
         difficulty: 'medium'
@@ -121,10 +120,6 @@ class QuestionCard extends Component {
         return array;
      }
 
-     onStartHandler = () => {
-        this.setState({showQuestion: true})
-     }
-
      onRestartHandler = () => {
         this.setState({ ...this.initialState })
         this.getQuizData()
@@ -135,12 +130,12 @@ class QuestionCard extends Component {
         let question = <Spinner/>
         if(this.state.results && (this.state.questionNumber < this.state.questions) && (this.state.questionNumber !== this.state.questions)){
             question = (
-                <QuestionContainer show={this.state.showQuestion}>
-                    <QuestionHeader show={this.state.showQuestion} 
+                <QuestionContainer show>
+                    <QuestionHeader show
                                     questionNumber={this.state.questionNumber+1}
                                     questions={this.state.questions}/>
                     <Category category={this.state.results[this.state.questionNumber].category} />
-                    <Question show={this.state.showQuestion}>{this.state.results[this.state.questionNumber].question}</Question>
+                    <Question show>{this.state.results[this.state.questionNumber].question}</Question>
                 </QuestionContainer>
             )
         }
@@ -152,7 +147,7 @@ class QuestionCard extends Component {
             return <AnswerButton 
                         key={answerKey}
                         showNext={() => this.showNextButton(answerKey)}
-                        show={this.state.showQuestion}
+                        show
                         showCorrect={this.answerIsCorrect(answerKey)}
                         nextButtonShown={this.state.showNextButton}
                         clicked={this.state.answers[answerKey].clicked}>{this.state.answers[answerKey].answer}
@@ -160,11 +155,10 @@ class QuestionCard extends Component {
             })
         }
 
-        let buttons = null
+        let nexButton = null
         if(this.state.results && (this.state.questionNumber < this.state.questions) && (this.state.questionNumber !== this.state.questions)){
-            buttons = (<div>
+            nexButton = (<div>
                 <Button show={this.state.showNextButton} onClick={this.nextQuestionHandler}>Next Question</Button>
-                <Button show={!this.state.showQuestion} onClick={this.onStartHandler}>Start Quiz!</Button>  
             </div>)
         }
 
@@ -178,14 +172,14 @@ class QuestionCard extends Component {
                             
             question = null
             answers = null
-            buttons = null
+            nexButton = null
         }
         
         return (
             <div className={classes.QuestionCard}>
                 {question}
                 {answers}
-                {buttons}
+                {nexButton}
                 {scoreBoard}
             </div>
         )

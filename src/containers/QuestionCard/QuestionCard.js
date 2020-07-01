@@ -13,7 +13,8 @@ import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
 import Category from '../../components/Category/Category'
 
 class QuestionCard extends Component {
-    initialState = {
+
+    state = {
         showNextButton: false,
         results: null,
         questionNumber: 0, //Zero-indexed array of questions
@@ -23,12 +24,7 @@ class QuestionCard extends Component {
         difficulty: 'medium'
     }
 
-    state = {
-        ...this.initialState
-    }
-
     componentDidUpdate(){
-        console.log('[initialState]: ', this.initialState)
         console.log('[state]: ', this.state)
     }
 
@@ -121,8 +117,7 @@ class QuestionCard extends Component {
      }
 
      onRestartHandler = () => {
-        this.setState({ ...this.initialState })
-        this.getQuizData()
+        this.props.history.push('/');
      }
 
     render() {

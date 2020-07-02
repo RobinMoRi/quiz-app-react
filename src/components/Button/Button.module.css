@@ -9,17 +9,21 @@
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 16px;
-    
-    font-family: 'Open Sans'; 
-
-    
+    font-family: 'Open Sans';  
 }
+
+
 
 .Button:hover{
     color: white;
     cursor: pointer;
 
     animation: gradient 7s ease infinite;
+}
+
+.Button:disabled{
+    background-image: linear-gradient(-45deg, #a8a8a8, #8a8a8a, #d3d3d3);
+    cursor: initial;
 }
 
 @keyframes gradient {

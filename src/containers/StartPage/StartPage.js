@@ -66,7 +66,7 @@ class StartPage extends Component {
             <div className={classes.StartPage}>
                 <Title>Please select difficulty level </Title>
                 {difficultyButton}
-                <Button show onClick={this.onStartQuizHandler}>Start Quiz!</Button>
+                <Button show onClick={this.onStartQuizHandler} disabled={this.props.difficulty === null}>Start Quiz!</Button>
                 <div style={{color: 'lightgrey', fontSize:'7pt'}}>Powered by: <a style={{color: 'lightgrey'}} href={'https://opentdb.com/'}>Open Trivia Database</a></div>
             </div>
         )

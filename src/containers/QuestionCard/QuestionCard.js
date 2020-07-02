@@ -13,6 +13,7 @@ import QuestionContainer from '../../containers/QuestionContainer/QuestionContai
 import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
 import Category from '../../components/Category/Category'
 import DifficultyDisplay from '../../components/DifficultyDisplay/DifficultyDisplay'
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 
 const DIFFICULTIES = {hard: 'Hard', medium: 'Medium', easy: 'Easy'}
 
@@ -192,4 +193,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(QuestionCard)
+export default connect(mapStateToProps)(withErrorHandler(QuestionCard, axios))

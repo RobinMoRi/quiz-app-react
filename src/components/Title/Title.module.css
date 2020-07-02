@@ -1,0 +1,26 @@
+.Title{
+    color: rgb(11, 0, 77);
+    font-family: 'Open Sans';
+    margin: 30px;
+    margin-bottom: 5px;
+    font-size: 11pt;
+    font-weight: bold;
+}
+
+.LogoTitle{
+    color: rgb(158, 158, 158);
+    font-family: 'Open Sans';
+    margin: 10px;
+    margin-top: 2px;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+
+.Logo{
+    color: rgb(199, 199, 199);
+    font-family: 'Open Sans';
+    margin-top: 20px;
+    font-size: 20pt;
+    font-weight: bold;
+}

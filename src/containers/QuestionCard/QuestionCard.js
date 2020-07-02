@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux";
 
 import classes from './QuestionCard.module.css'
 import AnswerButton from '../../components/AnswerButton/AnswerButton'
@@ -11,6 +12,9 @@ import QuestionHeader from '../../components/QuestionHeader/QuestionHeader'
 import QuestionContainer from '../../containers/QuestionContainer/QuestionContainer'
 import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
 import Category from '../../components/Category/Category'
+import DifficultyDisplay from '../../components/DifficultyDisplay/DifficultyDisplay'
+
+const DIFFICULTIES = {hard: 'Hard', medium: 'Medium', easy: 'Easy'}
 
 class QuestionCard extends Component {
 
@@ -20,12 +24,12 @@ class QuestionCard extends Component {
         questionNumber: 0, //Zero-indexed array of questions
         answers: null,
         score: 0,
-        questions: 10, //number of questions (for easy reading)
-        difficulty: 'medium'
+        questions: 10 //number of questions (for easy reading)
     }
 
     componentDidUpdate(){
         console.log('[state]: ', this.state)
+        console.log('[QuestionsCard.js] Redux state:', this.props.difficulty)
     }
 
     componentDidMount(){
@@ -33,7 +37,7 @@ class QuestionCard extends Component {
     }
 
     getQuizData = () => {
-        axios.get(`?amount=${this.state.questions}&difficulty=${this.state.difficulty}&encode=url3986`)
+        axios.get(`?amount=${this.state.questions}&difficulty=${this.props.difficulty}&encode=url3986`)
         .then(response => {
             this.setState({results: response.data.results});
             console.log(response.data.results);
@@ -128,7 +132,8 @@ class QuestionCard extends Component {
                 <QuestionContainer show>
                     <QuestionHeader show
                                     questionNumber={this.state.questionNumber+1}
-                                    questions={this.state.questions}/>
+                                    questions={this.state.questions} />
+                    <DifficultyDisplay difficulty={DIFFICULTIES[this.props.difficulty]} />
                     <Category category={this.state.results[this.state.questionNumber].category} />
                     <Question show>{this.state.results[this.state.questionNumber].question}</Question>
                 </QuestionContainer>
@@ -181,4 +186,10 @@ class QuestionCard extends Component {
     }
 }
 
-export default QuestionCard
+const mapStateToProps = state => {
+    return {
+        difficulty: state.difficulty
+    }
+}
+
+export default connect(mapStateToProps)(QuestionCard)

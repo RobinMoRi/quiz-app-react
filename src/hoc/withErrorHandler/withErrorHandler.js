@@ -2,33 +2,39 @@ import React, { Component } from 'react'
 import ErrorPage from '../../components/ErrorPage/ErrorPage'
 import AuxContainter from '../AuxContainer/AuxContainer'
 
-const withErrorHandler = (WrappedComponent, axios) => {
+const withErrorHandler = ( WrappedComponent, axios ) => {
     return class extends Component {
         state = {
-            error: null
+            error: false,
+            errorMessage: null
         }
 
-        componentDidCatch(error){
-            this.setState({error: error});
-        }
 
         componentDidMount(){
-            console.log('axios.interceptors.request', axios.interceptors.request)
+            console.log('[withErrorHandler] componentDidMount')
+            console.log(axios.interceptors.request)
             axios.interceptors.request.use(req => {
-                console.log('req', req.data)
-                this.setState({error: null});
+                console.log('Request: ', req)
+                this.setState({error: false});
                 return req;
             })
             axios.interceptors.response.use(res => res, error => {
-                this.setState({error: error});
+                this.setState({error: true, errorMessage: error});
+                console.log('Error error: ', this.state.error)
             })
+            console.log('end of comp did mount')
+        }
+
+        onReturnHandler = () => {
+            this.setState({error: null})
+            this.props.history.push('/')
         }
 
         render(){
             return(
                 <AuxContainter>
-                    <ErrorPage show={this.state.error} />
-                    <WrappedComponent {...this.props}/>}
+                    <ErrorPage show={this.state.error} onClick={this.onReturnHandler} />
+                    <WrappedComponent {...this.props}/>
                 </AuxContainter>
 
             )

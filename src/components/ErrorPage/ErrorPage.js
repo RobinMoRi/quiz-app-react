@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import classes from './ErrorPage.module.css'
 import Button from '../Button/Button'
+import { withRouter} from 'react-router-dom';
 
-class ErrorPage extends Component {
+export class ErrorPage extends Component {
 
     onReturnHandler = () => {
         this.props.history.push('/')
@@ -10,14 +11,14 @@ class ErrorPage extends Component {
 
     render() {
         return (
-            <div className={classes.ErrorPage} show={this.props.show}>
+            this.props.show ? <div className={classes.ErrorPage}>
                 <div className={classes.ErrorTitle}>
-                    Something went wrong!
+                    Ooops! Something went wrong
                 </div>
                 <Button show={this.props.show} onClick={this.onReturnHandler}>Return to start</Button>
-            </div>
+            </div> : null
         )
     }
 }
 
-export default ErrorPage
+export default withRouter(ErrorPage)

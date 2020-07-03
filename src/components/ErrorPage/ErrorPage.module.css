@@ -18,5 +18,8 @@
 .ErrorTitle{
     font-family: 'Open Sans';
     color: rgb(0, 5, 75);
-    margin: 10px;
+    margin: 20px;
+    margin-bottom: 0px;
+    font-size: 11pt;
+    font-weight: bold;
 }

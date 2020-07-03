@@ -21,6 +21,10 @@ class StartPage extends Component {
         }
     }
 
+    componentDidMount(){
+        this.props.onSetDifficulty(null)
+    }
+
     componentDidUpdate(){
         console.log('[state]: ', this.state)
         console.log('Redux state', this.props.difficulty)

@@ -13,7 +13,7 @@ import QuestionContainer from '../../containers/QuestionContainer/QuestionContai
 import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
 import Category from '../../components/Category/Category'
 import DifficultyDisplay from '../../components/DifficultyDisplay/DifficultyDisplay'
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
+import TimeCountDownBar from '../../components/TimeCountDownBar/TimeCountDownBar'
 
 const DIFFICULTIES = {hard: 'Hard', medium: 'Medium', easy: 'Easy'}
 
@@ -31,19 +31,42 @@ class QuestionCard extends Component {
     componentDidUpdate(){
         console.log('[state]: ', this.state)
         console.log('[QuestionsCard.js] Redux state:', this.props.difficulty)
+        console.log('ShowNextButton', this.state.showNextButton)
+        if (!this.state.showNextButton) {this.setShowNextButtonTimer()} //Timer
     }
 
     componentDidMount(){
         this.getQuizData()
+        this.setShowNextButtonTimer() //Timer
+    }
+
+    setShowNextButtonTimer = () => {
+        setTimeout(
+            function() {
+                this.setState({showNextButton: true});
+            }
+            .bind(this),
+            120000
+        );
     }
 
     getQuizData = () => {
         axios.get(`?amount=${this.state.questions}&difficulty=${this.props.difficulty}&encode=url3986`)
         .then(response => {
-            this.setState({results: response.data.results});
-            console.log(response.data.results);
-            this.spreadAnswer(this.state.questionNumber)
-        })
+            if(response.data.response_code === 0){
+                this.setState({results: response.data.results});
+                console.log(response.data.results);
+                this.spreadAnswer(this.state.questionNumber)
+            }
+            else{
+                throw new Error('Opentdb Error: response_code: ' + response.data.response_code + '\nRead more about response codes here: https://opentdb.com/api_config.php');
+            }
+        }).catch(error => {
+            console.log(error)
+            console.log('Redirecting to main page')
+            this.props.history.push('/errorPage')
+        } //Change for better error handling in the future
+        )
     }
 
 
@@ -137,6 +160,7 @@ class QuestionCard extends Component {
                     <DifficultyDisplay difficulty={DIFFICULTIES[this.props.difficulty]} />
                     <Category category={this.state.results[this.state.questionNumber].category} />
                     <Question show>{this.state.results[this.state.questionNumber].question}</Question>
+                    <TimeCountDownBar />
                 </QuestionContainer>
             )
         }
@@ -193,4 +217,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(withErrorHandler(QuestionCard, axios))
+export default connect(mapStateToProps)(QuestionCard)

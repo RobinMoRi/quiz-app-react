@@ -17,6 +17,8 @@ import TimeCountDownBar from '../../components/TimeCountDownBar/TimeCountDownBar
 import { HARD, MEDIUM, EASY } from '../../components/DifficultyButton/Difficulties'
 
 const DIFFICULTIES = {hard: 'Hard', medium: 'Medium', easy: 'Easy'}
+let sessionTimeoutHandle; //To clear timer not optimal I guess but it works...
+
 
 class QuestionCard extends Component {
 
@@ -30,11 +32,13 @@ class QuestionCard extends Component {
         time: 0 //ms
     }
 
+    
+
     componentDidUpdate(){
         console.log('[state]: ', this.state)
         console.log('[QuestionsCard.js] Redux state:', this.props.difficulty)
         console.log('ShowNextButton', this.state.showNextButton)
-        if (!this.state.showNextButton) {this.setShowNextButtonTimer(this.state.time)} //Timer
+        if (!this.state.showNextButton) {this.setShowNextButtonTimer(this.state.time);} //Timer
     }
 
     componentDidMount(){
@@ -43,12 +47,12 @@ class QuestionCard extends Component {
     }
 
     setShowNextButtonTimer = (time) => {
-        setTimeout(
+        console.log('setShowNextButtonTimer')
+        clearTimeout(sessionTimeoutHandle) //clear before setting new timer
+        sessionTimeoutHandle = setTimeout(
             function() {
                 this.setState({showNextButton: true});
-            }
-            .bind(this),
-            time + 550 //Sync constant
+            }.bind(this), time + 550 //Sync constant
         );
     }
 

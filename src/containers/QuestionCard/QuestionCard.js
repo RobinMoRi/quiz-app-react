@@ -12,8 +12,9 @@ import QuestionHeader from '../../components/QuestionHeader/QuestionHeader'
 import QuestionContainer from '../../containers/QuestionContainer/QuestionContainer'
 import AuxContainer from '../../hoc/AuxContainer/AuxContainer'
 import Category from '../../components/Category/Category'
-import DifficultyDisplay from '../../components/DifficultyDisplay/DifficultyDisplay'
+import ProgressDisplay from '../../components/ProgressDisplay/ProgressDisplay'
 import TimeCountDownBar from '../../components/TimeCountDownBar/TimeCountDownBar'
+import { HARD, MEDIUM, EASY } from '../../components/DifficultyButton/Difficulties'
 
 const DIFFICULTIES = {hard: 'Hard', medium: 'Medium', easy: 'Easy'}
 
@@ -25,29 +26,43 @@ class QuestionCard extends Component {
         questionNumber: 0, //Zero-indexed array of questions
         answers: null,
         score: 0,
-        questions: 10 //number of questions (for easy reading)
+        questions: 10, //number of questions (for easy reading)
+        time: 0 //ms
     }
 
     componentDidUpdate(){
         console.log('[state]: ', this.state)
         console.log('[QuestionsCard.js] Redux state:', this.props.difficulty)
         console.log('ShowNextButton', this.state.showNextButton)
-        if (!this.state.showNextButton) {this.setShowNextButtonTimer()} //Timer
+        if (!this.state.showNextButton) {this.setShowNextButtonTimer(this.state.time)} //Timer
     }
 
     componentDidMount(){
         this.getQuizData()
-        this.setShowNextButtonTimer() //Timer
+        this.setTimeConfigurations()
     }
 
-    setShowNextButtonTimer = () => {
+    setShowNextButtonTimer = (time) => {
         setTimeout(
             function() {
                 this.setState({showNextButton: true});
             }
             .bind(this),
-            120000
+            time + 550 //Sync constant
         );
+    }
+
+    setTimeConfigurations = () => {
+        console.log('this.props.difficulty: ', this.props.difficulty)
+        let time = 0;
+        switch(this.props.difficulty){
+            case HARD: time = 10000; break;
+            case MEDIUM: time = 15000; break;
+            case EASY: time = 20000; break;
+            default: time = 20000
+        }
+        this.setState({time: time})
+        this.setShowNextButtonTimer(time)
     }
 
     getQuizData = () => {
@@ -79,7 +94,7 @@ class QuestionCard extends Component {
             this.countScoreHandler()
         }
 
-        this.setState({showNextButton: true, answers: answerClickedState})
+        this.setState({showNextButton: true, answers: answerClickedState, barWidth: 100})
     }
 
     countScoreHandler = () => {
@@ -157,10 +172,13 @@ class QuestionCard extends Component {
                     <QuestionHeader show
                                     questionNumber={this.state.questionNumber+1}
                                     questions={this.state.questions} />
-                    <DifficultyDisplay difficulty={DIFFICULTIES[this.props.difficulty]} />
+                    <ProgressDisplay 
+                        difficulty={DIFFICULTIES[this.props.difficulty]} 
+                        questionNumber={this.state.questionNumber}
+                        score={this.state.score} />
                     <Category category={this.state.results[this.state.questionNumber].category} />
                     <Question show>{this.state.results[this.state.questionNumber].question}</Question>
-                    <TimeCountDownBar />
+                    <TimeCountDownBar time={this.state.time} showNextButton={this.state.showNextButton} />
                 </QuestionContainer>
             )
         }

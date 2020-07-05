@@ -4,8 +4,10 @@ Quiz App React is a simple quiz app built on [Create React App](https://github.c
 
 Using the following tools and libraries:
 * [Open Trivia DataBase](https://opentdb.com/api_config.php)
+* [Redux](https://redux.js.org/)
+* [react-router-dom](https://github.com/ReactTraining/react-router#readme)
 * [Font Awesome](https://fontawesome.com/)
-* [Styled Components](https://styled-components.com/)
+* [styled-components](https://styled-components.com/)
 * Javascript/JSX/CSS
 
 ## Installation
